@@ -5,6 +5,11 @@ import random
 TELA_LARGURA = 500
 TELA_ALTURA = 800
 
+# Cores
+BRANCO = (255, 255, 255)
+PRETO = (0, 0, 0)
+AMARELO = (255, 240, 0)
+
 IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'pipe.png')))
 IMAGEM_CHAO = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'base.png')))
 IMAGEM_BACKGROUND = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bg.png')))
@@ -15,7 +20,99 @@ IMAGENS_PASSARO = [
 ]
 
 pygame.font.init()
-FONTE_PONTOS = pygame.font.SysFont('arial', 50)
+FONTE_PONTOS = pygame.font.SysFont('comic sans ms', 50)
+FONTE_TITULO = pygame.font.SysFont('comic sans ms', 60)
+FONTE_MENU = pygame.font.SysFont('comic sans ms', 40)
+
+
+class Menu:
+    def __init__(self):
+        self.titulo = FONTE_TITULO.render('FLAPPY BIRD', True, AMARELO)
+        self.iniciar = FONTE_MENU.render('INICIAR', True, AMARELO)
+        self.sair = FONTE_MENU.render('SAIR', True, AMARELO)
+        
+    def desenhar(self, tela):
+        tela.blit(IMAGEM_BACKGROUND, (0, 0))
+        
+        # Posiciona o título no topo central
+        pos_titulo = (TELA_LARGURA // 2 - self.titulo.get_width() // 2, 50)
+        tela.blit(self.titulo, pos_titulo)
+        
+        # Posiciona as opções do menu no centro
+        pos_iniciar = (TELA_LARGURA // 2 - self.iniciar.get_width() // 2, TELA_ALTURA // 2)
+        pos_sair = (TELA_LARGURA // 2 - self.sair.get_width() // 2, TELA_ALTURA // 2 + 80)
+        
+        tela.blit(self.iniciar, pos_iniciar)
+        tela.blit(self.sair, pos_sair)
+        
+        pygame.display.update()
+        
+    def handle_input(self, pos):
+        # Verifica se clicou em INICIAR
+        rect_iniciar = pygame.Rect(TELA_LARGURA // 2 - self.iniciar.get_width() // 2,
+                                 TELA_ALTURA // 2,
+                                 self.iniciar.get_width(),
+                                 self.iniciar.get_height())
+        
+        # Verifica se clicou em SAIR
+        rect_sair = pygame.Rect(TELA_LARGURA // 2 - self.sair.get_width() // 2,
+                               TELA_ALTURA // 2 + 80,
+                               self.sair.get_width(),
+                               self.sair.get_height())
+        
+        if rect_iniciar.collidepoint(pos):
+            return "iniciar"
+        elif rect_sair.collidepoint(pos):
+            return "sair"
+        return None
+
+
+class MenuFimDeJogo:
+    def __init__(self, pontos):
+        self.titulo = FONTE_TITULO.render('FIM DE JOGO', True, AMARELO)
+        self.pontuacao_texto = FONTE_MENU.render(f'PONTUAÇÃO: {pontos}', True, AMARELO)
+        self.tentar_novamente = FONTE_MENU.render('MENU INICIAL', True, AMARELO)
+        self.sair = FONTE_MENU.render('SAIR', True, AMARELO)
+        
+    def desenhar(self, tela):
+        tela.blit(IMAGEM_BACKGROUND, (0, 0))
+        
+        # Posiciona o título no centro superior
+        pos_titulo = (TELA_LARGURA // 2 - self.titulo.get_width() // 2, TELA_ALTURA // 8)
+        tela.blit(self.titulo, pos_titulo)
+        
+        # Posiciona o texto "PONTUAÇÃO"
+        pos_pontuacao_texto = (TELA_LARGURA // 2 - self.pontuacao_texto.get_width() // 2, TELA_ALTURA // 4 + 100)
+        tela.blit(self.pontuacao_texto, pos_pontuacao_texto)
+        
+        
+        # Posiciona as opções do menu
+        pos_tentar = (TELA_LARGURA // 2 - self.tentar_novamente.get_width() // 2, TELA_ALTURA // 2 + 50)
+        pos_sair = (TELA_LARGURA // 2 - self.sair.get_width() // 2, TELA_ALTURA // 2 + 130)
+        
+        tela.blit(self.tentar_novamente, pos_tentar)
+        tela.blit(self.sair, pos_sair)
+        
+        pygame.display.update()
+        
+    def handle_input(self, pos):
+        # Verifica se clicou em Tentar Novamente
+        rect_tentar = pygame.Rect(TELA_LARGURA // 2 - self.tentar_novamente.get_width() // 2,
+                                TELA_ALTURA // 2 + 50,
+                                self.tentar_novamente.get_width(),
+                                self.tentar_novamente.get_height())
+        
+        # Verifica se clicou em Sair
+        rect_sair = pygame.Rect(TELA_LARGURA // 2 - self.sair.get_width() // 2,
+                              TELA_ALTURA // 2 + 130,
+                              self.sair.get_width(),
+                              self.sair.get_height())
+        
+        if rect_tentar.collidepoint(pos):
+            return "tentar_novamente"
+        elif rect_sair.collidepoint(pos):
+            return "sair"
+        return None
 
 
 class Passaro:
@@ -167,64 +264,114 @@ def desenhar_tela(tela, passaros, canos, chao, pontos):
     for cano in canos:
         cano.desenhar(tela)
 
-    texto = FONTE_PONTOS.render(f"Pontuação: {pontos}", 1, (255, 255, 255))
+    texto = FONTE_PONTOS.render(f"PONTOS: {pontos}", 1, AMARELO)
     tela.blit(texto, (TELA_LARGURA - 10 - texto.get_width(), 10))
     chao.desenhar(tela)
     pygame.display.update()
 
 
 def main():
-    passaros = [Passaro(230, 350)]
-    chao = Chao(730)
-    canos = [Cano(700)]
+    pygame.init()
     tela = pygame.display.set_mode((TELA_LARGURA, TELA_ALTURA))
-    pontos = 0
+    pygame.display.set_caption('Flappy Bird')
     relogio = pygame.time.Clock()
+    
+    while True:
+        # Menu principal
+        menu = Menu()
+        no_menu = True
+        
+        # Loop do menu principal
+        while no_menu:
+            relogio.tick(30)
+            menu.desenhar(tela)
+            
+            for evento in pygame.event.get():
+                if evento.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                if evento.type == pygame.MOUSEBUTTONDOWN:
+                    acao = menu.handle_input(pygame.mouse.get_pos())
+                    if acao == "iniciar":
+                        no_menu = False
+                    elif acao == "sair":
+                        pygame.quit()
+                        quit()
+    
+        # Inicialização do jogo
+        passaros = [Passaro(230, 350)]
+        chao = Chao(730)
+        canos = [Cano(700)]
+        pontos = 0
+        
+        rodando = True
+        while rodando:
+            relogio.tick(30)
 
-    rodando = True
-    while rodando:
-        relogio.tick(30)
+            # interação com o usuário
+            for evento in pygame.event.get():
+                if evento.type == pygame.QUIT:
+                    rodando = False
+                    pygame.quit()
+                    quit()
+                if evento.type == pygame.KEYDOWN:
+                    if evento.key == pygame.K_SPACE:
+                        for passaro in passaros:
+                            passaro.pular()
 
-        # interação com o usuário
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
-                rodando = False
-                pygame.quit()
-                quit()
-            if evento.type == pygame.KEYDOWN:
-                if evento.key == pygame.K_SPACE:
-                    for passaro in passaros:
-                        passaro.pular()
+            # mover as coisas
+            for passaro in passaros:
+                passaro.mover()
+            chao.mover()
 
-        # mover as coisas
-        for passaro in passaros:
-            passaro.mover()
-        chao.mover()
+            adicionar_cano = False
+            remover_canos = []
+            for cano in canos:
+                for i, passaro in enumerate(passaros):
+                    if cano.colidir(passaro):
+                        passaros.pop(i)
+                    if not cano.passou and passaro.x > cano.x:
+                        cano.passou = True
+                        adicionar_cano = True
+                cano.mover()
+                if cano.x + cano.CANO_TOPO.get_width() < 0:
+                    remover_canos.append(cano)
 
-        adicionar_cano = False
-        remover_canos = []
-        for cano in canos:
+            if adicionar_cano:
+                pontos += 1
+                canos.append(Cano(600))
+            for cano in remover_canos:
+                canos.remove(cano)
+
             for i, passaro in enumerate(passaros):
-                if cano.colidir(passaro):
+                if (passaro.y + passaro.imagem.get_height()) > chao.y or passaro.y < 0:
                     passaros.pop(i)
-                if not cano.passou and passaro.x > cano.x:
-                    cano.passou = True
-                    adicionar_cano = True
-            cano.mover()
-            if cano.x + cano.CANO_TOPO.get_width() < 0:
-                remover_canos.append(cano)
 
-        if adicionar_cano:
-            pontos += 1
-            canos.append(Cano(600))
-        for cano in remover_canos:
-            canos.remove(cano)
+            desenhar_tela(tela, passaros, canos, chao, pontos)
+            
+            # Verifica se o jogo acabou
+            if len(passaros) == 0:
+                rodando = False
 
-        for i, passaro in enumerate(passaros):
-            if (passaro.y + passaro.imagem.get_height()) > chao.y or passaro.y < 0:
-                passaros.pop(i)
-
-        desenhar_tela(tela, passaros, canos, chao, pontos)
+        # Menu de fim de jogo
+        menu_fim_de_jogo = MenuFimDeJogo(pontos)
+        no_menu_fim = True
+        
+        while no_menu_fim:
+            relogio.tick(30)
+            menu_fim_de_jogo.desenhar(tela)
+            
+            for evento in pygame.event.get():
+                if evento.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                if evento.type == pygame.MOUSEBUTTONDOWN:
+                    acao = menu_fim_de_jogo.handle_input(pygame.mouse.get_pos())
+                    if acao == "tentar_novamente":
+                        no_menu_fim = False  # Volta para o início do loop principal
+                    elif acao == "sair":
+                        pygame.quit()
+                        quit()
 
 
 if __name__ == '__main__':
