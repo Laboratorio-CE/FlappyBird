@@ -15,7 +15,7 @@ Este jogo foi criado apenas como um caso de estudo, sem fins comerciais. O objet
 
 ## Como Jogar
 
-1. Baixe o executável do jogo [aqui (para windows)](https://github.com/Laboratorio-CE/FlappyBird/releases/download/game/FlappyBird.zip) ou [aqui (para android - em breve)](#) e extraia o conteúdo
+1. Baixe o executável do jogo [aqui (para windows)](https://github.com/Laboratorio-CE/FlappyBird/releases/download/ver-1.1/FlappyBird.ver-1.1.zip) ou [aqui (para android - em breve)](#) e extraia o conteúdo
 2. Execute o arquivo `FlappyBird.exe`
 3. Clique em iniciar
 4. Use a barra de espaço para controlar o pássaro
