@@ -1,6 +1,17 @@
 import pygame
 import os
 import random
+import sys
+
+def resource_path(relative_path):
+    """ Obtém o caminho absoluto para os recursos da aplicação """
+    try:
+        # PyInstaller cria um temp folder e armazena o caminho em _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 TELA_LARGURA = 500
 TELA_ALTURA = 800
@@ -10,13 +21,13 @@ BRANCO = (255, 255, 255)
 PRETO = (0, 0, 0)
 AMARELO = (255, 240, 0)
 
-IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'pipe.png')))
-IMAGEM_CHAO = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'base.png')))
-IMAGEM_BACKGROUND = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bg.png')))
+IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(resource_path(os.path.join('imgs', 'pipe.png'))))
+IMAGEM_CHAO = pygame.transform.scale2x(pygame.image.load(resource_path(os.path.join('imgs', 'base.png'))))
+IMAGEM_BACKGROUND = pygame.transform.scale2x(pygame.image.load(resource_path(os.path.join('imgs', 'bg.png'))))
 IMAGENS_PASSARO = [
-    pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bird1.png'))),
-    pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bird2.png'))),
-    pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bird3.png'))),
+    pygame.transform.scale2x(pygame.image.load(resource_path(os.path.join('imgs', 'bird1.png')))),
+    pygame.transform.scale2x(pygame.image.load(resource_path(os.path.join('imgs', 'bird2.png')))),
+    pygame.transform.scale2x(pygame.image.load(resource_path(os.path.join('imgs', 'bird3.png')))),
 ]
 
 pygame.font.init()
