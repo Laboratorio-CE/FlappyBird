@@ -300,14 +300,14 @@ def main():
             for evento in pygame.event.get():
                 if evento.type == pygame.QUIT:
                     pygame.quit()
-                    quit()
+                    sys.exit()
                 if evento.type == pygame.MOUSEBUTTONDOWN:
                     acao = menu.handle_input(pygame.mouse.get_pos())
                     if acao == "iniciar":
                         no_menu = False
                     elif acao == "sair":
                         pygame.quit()
-                        quit()
+                        sys.exit()
     
         # Inicialização do jogo
         passaros = [Passaro(230, 350)]
@@ -324,7 +324,7 @@ def main():
                 if evento.type == pygame.QUIT:
                     rodando = False
                     pygame.quit()
-                    quit()
+                    sys.exit()
                 if evento.type == pygame.KEYDOWN:
                     if evento.key == pygame.K_SPACE:
                         for passaro in passaros:
@@ -375,14 +375,14 @@ def main():
             for evento in pygame.event.get():
                 if evento.type == pygame.QUIT:
                     pygame.quit()
-                    quit()
+                    sys.exit()
                 if evento.type == pygame.MOUSEBUTTONDOWN:
                     acao = menu_fim_de_jogo.handle_input(pygame.mouse.get_pos())
                     if acao == "tentar_novamente":
                         no_menu_fim = False  # Volta para o início do loop principal
                     elif acao == "sair":
                         pygame.quit()
-                        quit()
+                        sys.exit()
 
 
 if __name__ == '__main__':
